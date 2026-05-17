@@ -23,6 +23,11 @@ public class UrlService {
     @Autowired
     private UrlRepo urlRepo;
 
+    private static final String CHARS =
+        "qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
+
+    private static final SecureRandom RANDOM = new SecureRandom();
+
     private static void isValid(String url) {
         if (url == null || url.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL cannot be empty");
@@ -87,19 +92,16 @@ public class UrlService {
     }
 
     private String getShortCode() {
-        String chars = "qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
-
-        Random random = new Random();
         String code;
-
         do {
             StringBuilder sb = new StringBuilder();
+    
             for (int i = 0; i < 6; i++) {
-                sb.append(chars.charAt(random.nextInt(chars.length())));
+                sb.append(CHARS.charAt(RANDOM.nextInt(CHARS.length())));
             }
             code = sb.toString();
         } while (urlRepo.existsByShortCode(code));
-
+            
         return code;
     }
 
